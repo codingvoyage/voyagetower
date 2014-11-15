@@ -10,7 +10,9 @@ MoveProcess::MoveProcess(int targetObjectID, float targetDistance, float vx, flo
 	vy(vy)
 {
 	distanceElapsed = 0.0f;
+
 	// Register targetObjectID as an object being used.
+	Services::componentManager()->gameObjRegisterDependency(targetObjectID);
 }
 
 // error - remember delegating constructor cannot have another mem-initializer
@@ -24,6 +26,9 @@ MoveProcess::MoveProcess(int callbkCoroutine, int targetObjectID,
 	vy(vy)
 {
 	distanceElapsed = 0.0f;
+
+	// Register targetObjectID as an object being used.
+	Services::componentManager()->gameObjRegisterDependency(targetObjectID);
 }
 
 // Default destructor
@@ -72,4 +77,7 @@ void MoveProcess::onFinish()
 	// CallBack
 	cout << "Callback time!" << endl;
 	LuaCallbackProcess::onFinish();
+
+	// Free dependency
+	Services::componentManager()->gameObjRemoveDependency(targetObjectID);
 }

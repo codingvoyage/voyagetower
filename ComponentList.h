@@ -11,7 +11,7 @@ using namespace std;
 // has been defaulted to NULL = 0
 class ComponentList
 {
-private:
+protected:
 	vector<Component*> components;
 	int sizeLimit;
 

@@ -123,12 +123,6 @@ void ComponentManager::gameObjRemoveDependency(int objID) {
 // ComponentList-related things:
 int ComponentManager::addComponent(Component* myComponent, ComponentType type)
 {
-#ifdef DEBUG
-	if (type == ComponentType::ANIMATION)
-		cout << "adding new animation" << endl;
-	else if (type == ComponentType::PHYSICS)
-		cout << "adding new physics" << endl;
-#endif
 	typeToListMap::const_iterator iter;
 	iter = componentLists.find(type);
 

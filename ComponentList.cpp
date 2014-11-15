@@ -33,13 +33,13 @@ ComponentList::~ComponentList()
 int ComponentList::addComponent(Component* newComponent)
 {
 	int numberAttempted = 0;
-	cout << "let's go." << endl;
+	//cout << "let's go." << endl;
 	while (true)
 	{
 		cout << probeIndex << endl;
 		if (numberAttempted == sizeLimit)
 		{
-			cout << "REALLOC" << endl;
+			//cout << "REALLOC" << endl;
 			// Indices all filled, allocate more memory
 			probeIndex = sizeLimit;
 			sizeLimit *= 2;
@@ -74,11 +74,12 @@ int ComponentList::addComponent(Component* newComponent)
 				if (probeIndex >= sizeLimit) probeIndex = 0;
 				numberAttempted++;
 			}
+
 		}
 
 	}
 
-	std::cout << "ADDED A NEW AT INDEX " << probeIndex << "." << std::endl;
+	//std::cout << "ADDED A NEW AT INDEX " << probeIndex << "." << std::endl;
 	// The index we found it on.
 	components[probeIndex] = newComponent;
 	return probeIndex;

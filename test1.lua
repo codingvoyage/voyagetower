@@ -65,82 +65,18 @@ function move(callback, objID, ux, uy, speed, distance)
 end
 
 
---[[
-function entity(selfIndex, objID)
-	coroutine.yield();
-	LuaInterface:moveEntity(selfIndex, objID --0
-		, 0, 50, 150);
-	print("ended.");
-end
-]]--
-
 function moveEntity() 
 	myEntity:setVelocity(2, 2);
 	myEntity:update(500);
 end
 
-function asdf123(selfIndex)
-	
-	
-	--LuaInterface:boop();
-	print(55);
-	print("Self index: "..selfIndex);
-	
-	-- Pause before going
-	LuaInterface:wait(selfIndex, 2000);
-	coroutine.yield();
-	
-	print("Going now");
-	
-	objID = LuaInterface:newEntity(0, 0, 0, 0);
-	LuaInterface:moveEntity(selfIndex, objID --0
-		, 100, 50, 500);
-	coroutine.yield();
-	
-	print("Done.");
-	--coroutine.yield();
-	
-	--index = LuaInterface:newThread("secondCoroutine");
-	--print(index);
-	
-	--while (true) do
-	--	resumeCoroutine(index, selfIndex);
-	--	LuaInterface:wait(selfIndex, 1);
-	--	coroutine.yield();
-	--end
-	
-	--[[newVel = 2;
-	
-    for i=1,100,1 do 
-		newVel = newVel + 0.5;
-		myEntity:setVelocity(newVel, newVel);
-		myEntity:update(50);
-		coroutine.yield();
-		--print(i) 
-	end ]]--
-end	
-
--- moveEntity(coroutineIndex, objID, vx, vy, distance)
-function secondCoroutine(selfIndex)
-	
-	----LuaInterface:moveEntity(selfIndex, 0
-	--	, 100, 50, 500);
-	--coroutine.yield();
-	--[[newVel = 2;
-	
-    for i=1,100,1 do 
-		newVel = newVel + 0.5;
-		myEntity:setVelocity(newVel, newVel);
-		myEntity:update(50);
-		coroutine.yield();
-		--print(i) 
-	end
-]]--
-end
 
 -- Alright, it's time to perform experiments with lua here
-
 coroutines = {};
+
+-- maps coroutineIndices to tables of references
+referenceCounts = {};
+
 index = 1;
 function newCoroutine(funcName)
 	--co = coroutine.create( testCoroutine);
@@ -155,6 +91,67 @@ function startCoroutine(funcName, ...)
 	coIndex = newCoroutine(funcName);
 	resumeCoroutine(coIndex, ...)
 end
+
+-- do NOT forget to wipe the dependency list after a 
+-- coroutine index is recycled.
+function registerDependency(coroutineIndex, objID)
+
+	if referenceCounts[coroutineIndex] == nil then
+		-- create new table, add it.
+		local newDependency = { objID };
+		newDependency.size = 1;
+		referenceCounts[coroutineIndex] = newDependency;
+		
+	else -- not nil, meaning there was an existing table
+		local dependencyList = referenceCounts[coroutineIndex];
+		table.insert(dependencyList, objID);
+		dependencyList.size = dependencyList.size + 1;
+		
+		-- Is this necessary? 
+		-- referenceCounts[coroutineIndex] = dependencyList;
+		-- apparently not.
+	end
+end
+
+function removeDependency(coroutineIndex, objID)
+	local dependencyList = referenceCounts[coroutineIndex];
+	if dependencyList ~= nil then
+		-- loop through list to find objID
+		for i,v in pairs(dependencyList) do
+		
+			print(i.." " ..v);
+			if v == objID then
+				table.remove(dependencyList, i);
+				return;
+			end
+		end
+	end
+end
+
+function clearDependencies(coroutineIndex)
+
+	local dependencyList = referenceCounts[coroutineIndex];
+	if dependencyList ~= nil then
+	
+		for i, v in pairs(dependencyList) do 
+			-- v is the dependency
+			-- LuaInterface:unregister(v);
+			print(v);
+		end
+	
+		referenceCounts[coroutineIndex] = nil;
+	end
+	
+end
+
+registerDependency(0, 55);
+registerDependency(0, 22);
+registerDependency(1, 38);
+registerDependency(1, 89);
+registerDependency(1, 109);
+removeDependency(0, 22);
+--removeDependency(0, 4444);
+
 
 function resumeCoroutine(coroutineIndex, ...)
 	-- get coroutine.

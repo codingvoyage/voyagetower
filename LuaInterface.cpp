@@ -148,7 +148,33 @@ extern "C"
 		return 1;
 	}
 
+	// increment the reference Counts of provided objID
+	static int registerDependency(lua_State* L)
+	{
+		// In the future maybe we can track the thing
+		// that registers it, for now it's just a simple incrementation
+		assert(lua_gettop(L) == 2);
+		int objID = luaL_checkint(L, 2);
+
+		// Register targetObjectID as an object being used.
+		Services::componentManager()->gameObjRegisterDependency(objID);
+
+		return 0;
+	}
+
+	// decrement the reference Counts of provided objID
+	static int removeDependency(lua_State* L)
+	{
+		// Same comment, this can be more sophisticated in future
+		assert(lua_gettop(L) == 2);
+		int objID = luaL_checkint(L, 2);
+
+		Services::componentManager()->gameObjRemoveDependency(objID);
+
+		return 0;
+	}
 }
+
 LuaInterface::LuaInterface()
 {
 	// Library init
@@ -175,6 +201,13 @@ LuaInterface::LuaInterface()
 
 	lua_pushcfunction(L, startCoroutine);
 	lua_setfield(L, -2, "startCoroutine");
+
+	lua_pushcfunction(L, registerDependency);
+	lua_setfield(L, -2, "registerDependency");
+
+	lua_pushcfunction(L, removeDependency);
+	lua_setfield(L, -2, "removeDependency");
+
 
 	LuaInterface** thisInterface = static_cast<LuaInterface**>(
 		lua_newuserdata(L, sizeof(LuaInterface*))

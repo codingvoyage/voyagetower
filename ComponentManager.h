@@ -49,6 +49,13 @@ public:
 		}
 		~GameObject() {}
 
+		// If the dependencyCount is greater than 0, count it as alive
+		ComponentState getState()
+		{
+			if (dependencyCount > 0) return ComponentState::ALIVE;
+			else return Component::getState();
+		}
+
 		// These are dummies to satisfy the interface
 		void update(float dt) { }
 		void applyBuffer() { }
