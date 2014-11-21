@@ -1,5 +1,5 @@
 #include "ResourceManager.h"
-
+#include <fstream>
 
 ResourceManager::ResourceManager(SDL_Renderer* renderer)
 	: renderer(renderer)
@@ -36,6 +36,122 @@ ResourceManager::~ResourceManager()
 
 	// Stop SDL_Image
 	IMG_Quit();
+
+}
+
+void ResourceManager::loadDefaultResources()
+{
+	// Use Resource.cpp to load the specific graphics for the rudimentary game.
+
+	// Loads all textures into memory
+	ifstream myfile;
+	myfile.open("res\\loadtextures.txt");
+	if (myfile.is_open())
+	{
+		string line;
+		string nextID;
+		string nextFilepath;
+		bool needsNextID = true;
+
+		while (getline(myfile, line))
+		{
+			if (line == "") continue;
+			if (needsNextID)
+			{
+				nextID = line;
+				needsNextID = false;
+			}
+			else {
+				nextFilepath = line;
+				loadTexture(nextID, nextFilepath);
+				needsNextID = true;
+			}
+
+		}
+		myfile.close();
+		myfile.clear();
+	}
+
+#ifdef DEBUG
+	cout << "\nFinished loading textures\n\n";
+#endif
+
+	// Assemble textures into animations.
+	ifstream animation;
+	animation.open("res\\loadanimations.txt");
+	if (animation.is_open())
+	{
+		string line;
+		int frameCount;
+		string animationID;
+		string* textureIDs;
+		float* delayTimes;
+
+		// 0 - needs animationID, 1 - needs length,
+		// 2 - needs textureID, 3 - needs corresponding delay
+		int state = 0;
+		int currentFrame = 0;
+
+		while (getline(animation, line))
+		{
+			if (line == "") continue;
+
+			switch (state)
+			{
+				// Read animationID, move on to read length
+			case 0:
+				animationID = line;
+				state = 1;
+				break;
+
+				// Read length, move on to read textureID
+			case 1:
+				frameCount = atoi(line.c_str());
+				textureIDs = new string[frameCount];
+				delayTimes = new float[frameCount];
+				state = 2;
+				break;
+
+				// Read textureID, move on to frame delay
+			case 2:
+				textureIDs[currentFrame] = line;
+				state = 3;
+				break;
+
+				// Read delay, either finish or next textureID
+			case 3:
+				float delay = (float)atof(line.c_str());
+				delayTimes[currentFrame] = delay;
+				currentFrame++;
+
+				if (currentFrame == frameCount)
+				{
+					// Done with this one.
+					addMultiTexAnimation(
+						textureIDs,
+						delayTimes,
+						frameCount,
+						animationID);
+
+					// Reset state
+					currentFrame = 0;
+					state = 0;
+				}
+				else
+				{
+					// Need more frames.
+					state = 2;
+				}
+
+				break;
+
+			}	// end switch
+
+		} // end input loop
+
+		animation.close();
+	}
+
 
 }
 

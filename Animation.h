@@ -16,6 +16,8 @@ public:
 	virtual ~Animation();
 
 	virtual void	draw(int frameIndex, int screenX, int screenY);
+	virtual void	draw(int frameIndex, int screenX, int screenY,
+							Vector2 targetOrientation);
 
 	int				getFrameCount();
 	float			getFrameDuration(int frameIndex);

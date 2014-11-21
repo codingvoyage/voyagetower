@@ -21,3 +21,10 @@ void SingleTextureAnimation::draw(int frameIndex, int screenX, int screenY)
 {
 	// To be implemented
 }
+
+
+void SingleTextureAnimation::draw(int frameIndex, int screenX, int screenY,
+	Vector2 targetOrientation)
+{
+
+}

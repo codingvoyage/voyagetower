@@ -15,6 +15,7 @@ public:
 	virtual ~MultiTextureAnimation();
 
 	void draw(int frameIndex, int screenX, int screenY);
+	void draw(int frameIndex, int screenX, int screenY, Vector2 targetOrientation);
 
 
 };

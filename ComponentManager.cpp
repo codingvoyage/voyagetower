@@ -62,10 +62,10 @@ void ComponentManager::gameObjAddComponent
 	// You should validate objID first.
 
 	// Get the gameobject being referenced
-	cout << ".." << endl;
+	//cout << ".." << endl;
 	GameObject* object = getGameObject(objID);
-	cout << "Obj id " << objID << endl;
-	cout << ",," << endl;
+	//cout << "Obj id " << objID << endl;
+	//cout << ",," << endl;
 	for (int i = 0; i < GameObject::SIZE_LIMIT; i++)
 	{
 		Component* current = object->components[i];

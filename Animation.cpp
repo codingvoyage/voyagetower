@@ -16,6 +16,13 @@ void Animation::draw(int frameIndex, int screenX, int screenY)
 
 }
 
+
+void Animation::draw(int frameIndex, int screenX, int screenY,
+	Vector2 targetOrientation)
+{
+
+}
+
 int Animation::getFrameCount()
 {
 	return numFrames;

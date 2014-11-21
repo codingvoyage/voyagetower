@@ -28,6 +28,8 @@ public:
 	ResourceManager			(SDL_Renderer* renderer);
 	~ResourceManager		();
 
+	void					loadDefaultResources();
+
 	Texture*				getTexture(string id);
 	Animation*				getAnimation(string id);
 	

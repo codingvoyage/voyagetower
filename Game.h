@@ -2,7 +2,6 @@
 #define GAME_H
 
 #include <iostream>
-#include <fstream>
 #include <SDL.h>
 #include <SDL_main.h>
 #include <lua.hpp>
@@ -27,7 +26,6 @@ private:
 	ResourceManager*	resource;
 
 	int					startSDL();					//Initialize SDL systems
-	void				loadResources();
 
 public:
 	static const int	SCREEN_WIDTH = 640;
